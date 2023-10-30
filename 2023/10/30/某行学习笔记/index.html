@@ -1,0 +1,685 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Qiyue">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="来看看某行的加密链接：aHR0cDovL3d3dy5wYmMuZ292LmNuLw&#x3D;&#x3D; 流程 请求分析 逆向分析 测试结果  请求分析打开网页，F12打开开发者工具，依次点击Application&#x3D;&#x3D;》Storage&#x3D;&#x3D;》Clear site data，清除缓存刷新后可以看到进入了debugger，选中debugger所在行，右键选择Ne">
+<meta property="og:type" content="article">
+<meta property="og:title" content="某行学习笔记">
+<meta property="og:url" content="https://qiyue-a.github.io/2023/10/30/%E6%9F%90%E8%A1%8C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Qiyue&#39;s blog">
+<meta property="og:description" content="来看看某行的加密链接：aHR0cDovL3d3dy5wYmMuZ292LmNuLw&#x3D;&#x3D; 流程 请求分析 逆向分析 测试结果  请求分析打开网页，F12打开开发者工具，依次点击Application&#x3D;&#x3D;》Storage&#x3D;&#x3D;》Clear site data，清除缓存刷新后可以看到进入了debugger，选中debugger所在行，右键选择Ne">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185098490-47d6b13f-4f29-478c-a40a-1724ee86a106.png#averageHue=%23fcf8f3&clientId=u1763203b-345c-4&from=paste&height=788&id=u7be9016f&originHeight=887&originWidth=1500&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=135792&status=done&style=none&taskId=ud7c9bf20-2ac7-4402-a175-093f3858bad&title=&width=1333.3333333333333">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185434780-6c2a2787-6e8b-47de-8234-f7b9e5ef2f47.png#averageHue=%23e9e7e6&clientId=u1763203b-345c-4&from=paste&height=793&id=u069b1f52&originHeight=892&originWidth=1920&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=84362&status=done&style=none&taskId=u1004324e-e1b0-4dc7-b704-1a73b5e23f1&title=&width=1706.6666666666667">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185934185-22ea9a7e-5367-40ff-a8dc-0bc1699b26bc.png#averageHue=%23f9f1d5&clientId=u1763203b-345c-4&from=paste&height=783&id=u4fe4c70b&originHeight=881&originWidth=1486&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=144106&status=done&style=none&taskId=u6c0d04ce-2b87-49cd-829f-2a3b20200ad&title=&width=1320.888888888889">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680186028961-39da7701-aa3d-40df-9515-f5edb03c4b29.png#averageHue=%23f8efd2&clientId=u1763203b-345c-4&from=paste&height=785&id=u6bca9240&originHeight=883&originWidth=1461&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=163120&status=done&style=none&taskId=ubcf8e5bc-b15d-486e-bb7f-b971c809365&title=&width=1298.6666666666667">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680186688212-93bb6c5c-8e67-4442-be3f-25825a016328.png#averageHue=%23e3c18b&clientId=u1763203b-345c-4&from=paste&height=788&id=u7f1a1e52&originHeight=886&originWidth=1476&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=93158&status=done&style=none&taskId=uc46be17b-760a-4ef5-85cf-2f3b1c0ec3b&title=&width=1312">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680187092616-c6390e0d-fffd-4f46-b068-5d0ff8c933b0.png#averageHue=%23eeedec&clientId=u1763203b-345c-4&from=paste&height=426&id=u547633f1&originHeight=479&originWidth=933&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=52615&status=done&style=none&taskId=ua574e150-f231-4f4e-96f5-701b4ebd6bc&title=&width=829.3333333333334">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680187435847-c9191469-ef91-41c2-9f84-83266cb97c0c.png#averageHue=%23484d49&clientId=u1763203b-345c-4&from=paste&height=783&id=u07b0f395&originHeight=881&originWidth=1434&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=1082455&status=done&style=none&taskId=u55690d45-71b2-41c5-8e51-93c00d0723e&title=&width=1274.6666666666667">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680188048586-c386ebe0-c656-40d2-a862-26b50a33018d.png#averageHue=%233a3c3a&clientId=u1763203b-345c-4&from=paste&height=797&id=u307eb78e&originHeight=897&originWidth=1491&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=962980&status=done&style=none&taskId=ub736ae06-cbf2-4906-a46e-3859e72e936&title=&width=1325.3333333333333">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680528670387-cf88d30d-bb57-4556-bf44-d1b47a9fbbc9.png#averageHue=%23333633&clientId=u1763203b-345c-4&from=paste&height=844&id=u45d2ff1d&originHeight=949&originWidth=1417&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=686887&status=done&style=none&taskId=u1d7ebe19-a5d2-454c-9b9f-8f051677779&title=&width=1259.5555555555557">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680528937623-43f142b1-c1a4-406b-a5ed-e0b953dbc893.png#averageHue=%2347433a&clientId=u1763203b-345c-4&from=paste&height=253&id=u8f341cc8&originHeight=285&originWidth=808&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=129392&status=done&style=none&taskId=u08e1fb2d-6512-4c31-8dd9-320aa5213ab&title=&width=718.2222222222222">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680529250585-7d1e8dff-a357-43c9-84e4-11c5bfee3afc.png#averageHue=%23e1dcda&clientId=u1763203b-345c-4&from=paste&height=782&id=u1da7004f&originHeight=880&originWidth=1292&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=301930&status=done&style=none&taskId=u3114b02d-6eac-4106-a39c-da3c728284a&title=&width=1148.4444444444443">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680529339798-1b2bb233-5004-48e6-aac7-2cede0cd1645.png#averageHue=%23e1dddb&clientId=u1763203b-345c-4&from=paste&height=782&id=ud76b7093&originHeight=880&originWidth=1292&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=304882&status=done&style=none&taskId=u85286227-a543-4c49-9204-fe2b8066115&title=&width=1148.4444444444443">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680529843569-05ae3594-7c24-42d7-9e20-2f7dc73f149d.png#averageHue=%23f8f3f2&clientId=u1763203b-345c-4&from=paste&height=792&id=u98a14310&originHeight=891&originWidth=1570&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=203224&status=done&style=none&taskId=u906c6cbe-2359-421d-a440-9a7dfcc2eea&title=&width=1395.5555555555557">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680530767102-30671430-9ce2-4f7f-95f7-32c56211aafa.png#averageHue=%23f9f7f6&clientId=u1763203b-345c-4&from=paste&height=200&id=u7f51e25a&originHeight=225&originWidth=815&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=25224&status=done&style=none&taskId=u72194d43-01cb-479a-b1a4-485a156bbec&title=&width=724.4444444444445">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680531197776-232065d5-e473-4c03-91a2-65c1481ab4c4.png#averageHue=%23353632&clientId=u1763203b-345c-4&from=paste&height=787&id=u18f12fc1&originHeight=885&originWidth=1289&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=597181&status=done&style=none&taskId=u9b0feb6a-ff63-4ca0-b47c-ef55edafb28&title=&width=1145.7777777777778">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680531448971-53bde2b3-59dd-4a39-be4e-108a63c2792b.png#averageHue=%234d4e4b&clientId=u1763203b-345c-4&from=paste&height=619&id=uafb3e7a9&originHeight=696&originWidth=1319&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=710988&status=done&style=none&taskId=ucdc717bf-40a0-4ef2-a9c1-ea849bd417a&title=&width=1172.4444444444443">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680531690096-4210a284-2121-400e-8cfe-48319fa85ab5.png#averageHue=%23f8f0ef&clientId=u1763203b-345c-4&from=paste&height=775&id=u9e02205c&originHeight=872&originWidth=1557&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=188066&status=done&style=none&taskId=u400e7a9a-24c1-4522-96c0-52736e4ef75&title=&width=1384">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680532145247-ab653412-c2c0-47c7-9dbf-9c981b390136.png#averageHue=%23353936&clientId=u1763203b-345c-4&from=paste&height=793&id=u572298d9&originHeight=892&originWidth=1463&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=647351&status=done&style=none&taskId=u55887661-6542-4871-b57f-ff28e352d09&title=&width=1300.4444444444443">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680533469542-cfac6b58-5718-4651-9db2-943dd4844103.png#averageHue=%23404740&clientId=u1763203b-345c-4&from=paste&height=773&id=u7be95e07&originHeight=870&originWidth=1444&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=730686&status=done&style=none&taskId=ubaf5718b-c00f-4c7a-abff-344b4267994&title=&width=1283.5555555555557">
+<meta property="article:published_time" content="2023-10-30T13:56:53.000Z">
+<meta property="article:modified_time" content="2023-10-30T14:13:10.318Z">
+<meta property="article:author" content="Qiyue">
+<meta property="article:tag" content="爬虫">
+<meta property="article:tag" content="web逆向">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185098490-47d6b13f-4f29-478c-a40a-1724ee86a106.png#averageHue=%23fcf8f3&clientId=u1763203b-345c-4&from=paste&height=788&id=u7be9016f&originHeight=887&originWidth=1500&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=135792&status=done&style=none&taskId=ud7c9bf20-2ac7-4402-a175-093f3858bad&title=&width=1333.3333333333333">
+  
+  
+  
+  <title>某行学习笔记 - Qiyue&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"qiyue-a.github.io","root":"/","version":"1.9.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>QIYUE</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="某行学习笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-10-30 21:56" pubdate>
+          2023年10月30日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">某行学习笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>来看看某行的加密<br>链接：aHR0cDovL3d3dy5wYmMuZ292LmNuLw&#x3D;&#x3D;</p>
+<h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><ol>
+<li>请求分析</li>
+<li>逆向分析</li>
+<li>测试结果</li>
+</ol>
+<h1 id="请求分析"><a href="#请求分析" class="headerlink" title="请求分析"></a>请求分析</h1><p>打开网页，F12打开开发者工具，依次点击Application&#x3D;&#x3D;》Storage&#x3D;&#x3D;》Clear site data，清除缓存<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185098490-47d6b13f-4f29-478c-a40a-1724ee86a106.png#averageHue=%23fcf8f3&clientId=u1763203b-345c-4&from=paste&height=788&id=u7be9016f&originHeight=887&originWidth=1500&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=135792&status=done&style=none&taskId=ud7c9bf20-2ac7-4402-a175-093f3858bad&title=&width=1333.3333333333333" srcset="/img/loading.gif" lazyload alt="image.png"><br>刷新后可以看到进入了debugger，选中debugger所在行，右键选择Never Parse Here跳过debugger<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185434780-6c2a2787-6e8b-47de-8234-f7b9e5ef2f47.png#averageHue=%23e9e7e6&clientId=u1763203b-345c-4&from=paste&height=793&id=u069b1f52&originHeight=892&originWidth=1920&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=84362&status=done&style=none&taskId=u1004324e-e1b0-4dc7-b704-1a73b5e23f1&title=&width=1706.6666666666667" srcset="/img/loading.gif" lazyload alt="image.png"><br>回到Network项，可以看到有三个包是很可疑的，估计就是先发送一次请求，然后验证了某个东西，之后才是真正的数据包，可以看到第三个包才有数据返回；我也勾选了Preserve log和Disable cache两个选项，这两个分别是保留抓包和禁止缓存，都可以先勾上<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680185934185-22ea9a7e-5367-40ff-a8dc-0bc1699b26bc.png#averageHue=%23f9f1d5&clientId=u1763203b-345c-4&from=paste&height=783&id=u4fe4c70b&originHeight=881&originWidth=1486&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=144106&status=done&style=none&taskId=u6c0d04ce-2b87-49cd-829f-2a3b20200ad&title=&width=1320.888888888889" srcset="/img/loading.gif" lazyload alt="image.png"><br>看了下，第三个包没有什么可疑的参数，那可能就是cookies的问题了，可以全局搜一下cookies的值，只有第二个包set-cookies的<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680186028961-39da7701-aa3d-40df-9515-f5edb03c4b29.png#averageHue=%23f8efd2&clientId=u1763203b-345c-4&from=paste&height=785&id=u6bca9240&originHeight=883&originWidth=1461&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=163120&status=done&style=none&taskId=ubcf8e5bc-b15d-486e-bb7f-b971c809365&title=&width=1298.6666666666667" srcset="/img/loading.gif" lazyload alt="image.png"><br>再看第二个包，可以看到url上带有一个不明字符串和一个可疑参数wzwschallenge，全局搜索都是没有的，同时这个包是document发的包，那就好玩了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680186688212-93bb6c5c-8e67-4442-be3f-25825a016328.png#averageHue=%23e3c18b&clientId=u1763203b-345c-4&from=paste&height=788&id=u7f1a1e52&originHeight=886&originWidth=1476&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=93158&status=done&style=none&taskId=uc46be17b-760a-4ef5-85cf-2f3b1c0ec3b&title=&width=1312" srcset="/img/loading.gif" lazyload alt="image.png"><br>掏出我们的小花瓶，重新抓包看一下，这里说一下，浏览器抓到的包都是经过处理的，只有抓包工具抓到的才是真正返回的响应；重新抓包后搜索可以看到，在第一个包的响应中返回了这个可疑的url值<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680187092616-c6390e0d-fffd-4f46-b068-5d0ff8c933b0.png#averageHue=%23eeedec&clientId=u1763203b-345c-4&from=paste&height=426&id=u547633f1&originHeight=479&originWidth=933&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=52615&status=done&style=none&taskId=ua574e150-f231-4f4e-96f5-701b4ebd6bc&title=&width=829.3333333333334" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>请求的流程大概就是：</p>
+<ol>
+<li>第一个先发送请求，响应返回一大堆js</li>
+<li>然后由js生成第二个请求的url值和参数，响应set-cookies了</li>
+<li>最后第三个请求带着第二个数据包set的cookies请求获得数据</li>
+</ol>
+<h1 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h1><p>直接把第二个请求返回的js复制到vscode中，大概长这样子；一般document返回的js代码是可以直接运行的，可以直接跑一下，会有个报错说缺个window，在顶部补全个var window &#x3D; {}; 就行，因为他操作了window，那我也在尾部直接打印个window看看做了什么操作<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680187435847-c9191469-ef91-41c2-9f84-83266cb97c0c.png#averageHue=%23484d49&clientId=u1763203b-345c-4&from=paste&height=783&id=u07b0f395&originHeight=881&originWidth=1434&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=1082455&status=done&style=none&taskId=u55690d45-71b2-41c5-8e51-93c00d0723e&title=&width=1274.6666666666667" srcset="/img/loading.gif" lazyload alt="image.png"><br>惊喜来得太突然，他这就直接返回了第二个请求所需要的东西了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680188048586-c386ebe0-c656-40d2-a862-26b50a33018d.png#averageHue=%233a3c3a&clientId=u1763203b-345c-4&from=paste&height=797&id=u307eb78e&originHeight=897&originWidth=1491&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=962980&status=done&style=none&taskId=ub736ae06-cbf2-4906-a46e-3859e72e936&title=&width=1325.3333333333333" srcset="/img/loading.gif" lazyload alt="image.png"><br>ok，我们继续研究他到底是怎样加密的；一般像这样压缩过的js代码，都比较难看出运行，就会习惯性格式化一下，但是注意，这个代码格式化后运行导致栈溢出的，这样子就是检测了格式化了，而格式化通常是通过正则匹配去检测的，可以直接搜索RegExp，为了分析代码，还是要先格式化后才能阅读，但是记住格式化后就别运行了，会直接卡死的，搜索后可以看到就是检测了EHgJgn这个方法<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680528670387-cf88d30d-bb57-4556-bf44-d1b47a9fbbc9.png#averageHue=%23333633&clientId=u1763203b-345c-4&from=paste&height=844&id=u45d2ff1d&originHeight=949&originWidth=1417&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=686887&status=done&style=none&taskId=u1d7ebe19-a5d2-454c-9b9f-8f051677779&title=&width=1259.5555555555557" srcset="/img/loading.gif" lazyload alt="image.png"><br>接下来直接进入调试，看看到底是检测了多少，可以在之前那一行代码前打上debugger; 然后新开一个浏览器运行，新开别的浏览器主要是为了仿真栈溢出导致原来的浏览器卡死，可以直接在console上直接粘贴运行<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680528937623-43f142b1-c1a4-406b-a5ed-e0b953dbc893.png#averageHue=%2347433a&clientId=u1763203b-345c-4&from=paste&height=253&id=u8f341cc8&originHeight=285&originWidth=808&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=129392&status=done&style=none&taskId=u08e1fb2d-6512-4c31-8dd9-320aa5213ab&title=&width=718.2222222222222" srcset="/img/loading.gif" lazyload alt="image.png"><br>可以看到浏览器已经在debugger上停止了，直接在浏览器上搜索RegExp，并且都打上断点，点击跳到下一个断点就可以分析正则是怎样检测的了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680529250585-7d1e8dff-a357-43c9-84e4-11c5bfee3afc.png#averageHue=%23e1dcda&clientId=u1763203b-345c-4&from=paste&height=782&id=u1da7004f&originHeight=880&originWidth=1292&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=301930&status=done&style=none&taskId=u3114b02d-6eac-4106-a39c-da3c728284a&title=&width=1148.4444444444443" srcset="/img/loading.gif" lazyload alt="image.png"><br>可以看到就检测了函数是否格式化了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680529339798-1b2bb233-5004-48e6-aac7-2cede0cd1645.png#averageHue=%23e1dddb&clientId=u1763203b-345c-4&from=paste&height=782&id=ud76b7093&originHeight=880&originWidth=1292&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=304882&status=done&style=none&taskId=u85286227-a543-4c49-9204-fe2b8066115&title=&width=1148.4444444444443" srcset="/img/loading.gif" lazyload alt="image.png"><br>接下来就是一步一步的去修改检测的点了，把检测的函数在自己的编辑器上都取消格式化，然后就会到对很长的一个函数的检测，这个取消不了格式化，就把编辑器上的这个！取反给去掉了过了这里的检测<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680529843569-05ae3594-7c24-42d7-9e20-2f7dc73f149d.png#averageHue=%23f8f3f2&clientId=u1763203b-345c-4&from=paste&height=792&id=u98a14310&originHeight=891&originWidth=1570&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=203224&status=done&style=none&taskId=u906c6cbe-2359-421d-a440-9a7dfcc2eea&title=&width=1395.5555555555557" srcset="/img/loading.gif" lazyload alt="image.png"><br>然后！我把所有可以搜索到的格式化检测过掉后还是会出现栈溢出！彪得太厉害了，我直接把他停了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680530767102-30671430-9ce2-4f7f-95f7-32c56211aafa.png#averageHue=%23f9f7f6&clientId=u1763203b-345c-4&from=paste&height=200&id=u7f51e25a&originHeight=225&originWidth=815&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=25224&status=done&style=none&taskId=u72194d43-01cb-479a-b1a4-485a156bbec&title=&width=724.4444444444445" srcset="/img/loading.gif" lazyload alt="image.png"><br>其实栈溢出主要的原因就是一些死循环或者是函数互调，把可以看到的检测过掉后还会有，那就说明还有一些字符换算后再用正则匹配去检测的，但是这样子找太难找了，要一步一步的去跟，tmd，我直接找加密的，赋值了window，那肯定调用了get的了，可以直接hook了，但是我一搜索就有找到了window，那直接下debugger;然后跟调试了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680531197776-232065d5-e473-4c03-91a2-65c1481ab4c4.png#averageHue=%23353632&clientId=u1763203b-345c-4&from=paste&height=787&id=u18f12fc1&originHeight=885&originWidth=1289&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=597181&status=done&style=none&taskId=u9b0feb6a-ff63-4ca0-b47c-ef55edafb28&title=&width=1145.7777777777778" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680531448971-53bde2b3-59dd-4a39-be4e-108a63c2792b.png#averageHue=%234d4e4b&clientId=u1763203b-345c-4&from=paste&height=619&id=uafb3e7a9&originHeight=696&originWidth=1319&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=710988&status=done&style=none&taskId=ucdc717bf-40a0-4ef2-a9c1-ea849bd417a&title=&width=1172.4444444444443" srcset="/img/loading.gif" lazyload alt="image.png"><br>放到浏览器上运行，就可以看到加密的地方了，手动还原一下这些没什么好说的了，都是时间活，可惜我ast学得不咋滴，哭死；再跟一下就可以找到加密的算法了，他加密算法不算难，难得是各种检测，反正暴力一点的就是直接在源代码上下debugger;这样就可以理清他逻辑了<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680531690096-4210a284-2121-400e-8cfe-48319fa85ab5.png#averageHue=%23f8f0ef&clientId=u1763203b-345c-4&from=paste&height=775&id=u9e02205c&originHeight=872&originWidth=1557&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=188066&status=done&style=none&taskId=u400e7a9a-24c1-4522-96c0-52736e4ef75&title=&width=1384" srcset="/img/loading.gif" lazyload alt="image.png"><br>ok，不想继续跟了，就到这吧，有需要算法源码的找我聊</p>
+<h2 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h2><p>这个其实就是sojson的加密，主要做了的事情就是代码混淆、格式化检测、死代码注入等等，加密的算法不算难</p>
+<h1 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h1><p><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680532145247-ab653412-c2c0-47c7-9dbf-9c981b390136.png#averageHue=%23353936&clientId=u1763203b-345c-4&from=paste&height=793&id=u572298d9&originHeight=892&originWidth=1463&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=647351&status=done&style=none&taskId=u55887661-6542-4871-b57f-ff28e352d09&title=&width=1300.4444444444443" srcset="/img/loading.gif" lazyload alt="image.png"><br>成功率测试：<br><img src="https://cdn.nlark.com/yuque/0/2023/png/12686748/1680533469542-cfac6b58-5718-4651-9db2-943dd4844103.png#averageHue=%23404740&clientId=u1763203b-345c-4&from=paste&height=773&id=u7be95e07&originHeight=870&originWidth=1444&originalType=binary&ratio=1.125&rotation=0&showTitle=false&size=730686&status=done&style=none&taskId=ubaf5718b-c00f-4c7a-abff-344b4267994&title=&width=1283.5555555555557" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%88%AC%E8%99%AB/" class="category-chain-item">爬虫</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%88%AC%E8%99%AB/web%E9%80%86%E5%90%91/" class="category-chain-item">web逆向</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%88%AC%E8%99%AB/" class="print-no-link">#爬虫</a>
+      
+        <a href="/tags/web%E9%80%86%E5%90%91/" class="print-no-link">#web逆向</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>某行学习笔记</div>
+      <div>https://qiyue-a.github.io/2023/10/30/某行学习笔记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Qiyue</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年10月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/10/29/hello-world/" title="Hello World">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
